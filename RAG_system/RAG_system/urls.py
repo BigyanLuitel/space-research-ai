@@ -20,4 +20,7 @@ from RAG import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
+    path('upload/', views.upload, name='upload'),
+    path('chat/', views.chat, name='chat'),
+    path('chat-api/', views.chat_api, name='chat_api'),
 ]

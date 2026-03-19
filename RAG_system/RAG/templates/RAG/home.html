@@ -5,40 +5,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Space Research AI</title>
-    <link rel="stylesheet" href="{% static 'CSS/style.css' %}">
+    <link rel="stylesheet" href="{% static 'CSS/home.css' %}">
 </head>
 <body>
-
     <div class="upload">
-        <h2>Upload a PDF</h2>
-
-        {% if error %}
-            <p class="error">{{ error }}</p>
-        {% endif %}
-
-        {% if success %}
-            <p class="success">
-                {{ pdf_name }} uploaded — {{ num_pages }} pages, {{ num_chunks }} chunks indexed.
-            </p>
-            <a href="/chat/" class="btn">Start chatting</a>
-        {% endif %}
-
-        <form method="post" enctype="multipart/form-data">
+        <h2>Space Research AI</h2>
+        <form id="upload-form" enctype="multipart/form-data">
             {% csrf_token %}
-            <input type="file" name="pdf_file" accept=".pdf">
+            <input type="file" id="file-input" name="pdf_file" accept=".pdf">
             <button type="submit">Upload</button>
         </form>
+        <p id="upload-status"></p>
     </div>
 
-    {% if success %}
-    <div id="chat-container">
+    <div id="chat-container" style="display:none;">
+        <div class="chat-header">
+            <span id="pdf-label"></span>
+        </div>
         <div id="chat-messages"></div>
         <div class="chat-input-row">
-            <input type="text" id="text" placeholder="Ask a question about your PDF...">
+            <input type="text" id="userMessage" placeholder="Ask a question...">
             <button id="send">Send</button>
         </div>
     </div>
-    {% endif %}
 
     <script src="{% static 'JS/home.js' %}"></script>
 </body>
