@@ -5,6 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 from .ai_system.ingest import ingest_pdf
 from .ai_system.qa_chain import answer_question
+from .ai_system.validator import is_relevant_to_space
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +22,8 @@ def upload(request):
             return JsonResponse({'error': 'No file selected.'}, status=400)
         if not uploaded_file.name.endswith('.pdf'):
             return JsonResponse({'error': 'Please upload a PDF file.'}, status=400)
-
+        if is_relevant_to_space(uploaded_file.name)['is_relevant'] is False:
+            return JsonResponse({'error': 'The uploaded PDF does not appear to be relevant to space research. Please upload a different file.'}, status=400)
         collection_name = uploaded_file.name.lower().replace(' ', '_').replace('.', '_')
 
         try:
