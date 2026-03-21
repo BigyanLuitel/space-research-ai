@@ -3,9 +3,8 @@ import logging
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
-from .ai_system.ingest import ingest_pdf
+from .ai_system.ingest import ingest_pdf, ingest_csv
 from .ai_system.qa_chain import answer_question
-from .ai_system.validator import is_relevant_to_space
 
 logger = logging.getLogger(__name__)
 
@@ -14,40 +13,65 @@ def home(request):
     return render(request, 'RAG/home.html')
 
 
-def upload(request):
-    if request.method == 'POST':
-        uploaded_file = request.FILES.get('pdf_file')
+def upload_pdf(request):
+    if request.method != 'POST':
+        return render(request, 'RAG/home.html')
 
-        if not uploaded_file:
-            return JsonResponse({'error': 'No file selected.'}, status=400)
-        if not uploaded_file.name.endswith('.pdf'):
-            return JsonResponse({'error': 'Please upload a PDF file.'}, status=400)
-        if is_relevant_to_space(uploaded_file.name)['is_relevant'] is False:
-            return JsonResponse({'error': 'The uploaded PDF does not appear to be relevant to space research. Please upload a different file.'}, status=400)
-        collection_name = uploaded_file.name.lower().replace(' ', '_').replace('.', '_')
+    uploaded_file = request.FILES.get('pdf_file')
 
-        try:
-            num_chunks, num_pages = ingest_pdf(uploaded_file, collection_name)
-            request.session['collection_name'] = collection_name
-            request.session['pdf_name'] = uploaded_file.name
-            request.session.modified = True
+    if not uploaded_file:
+        return JsonResponse({'error': 'No file selected.'}, status=400)
+    if not uploaded_file.name.lower().endswith('.pdf'):
+        return JsonResponse({'error': 'Please upload a PDF file.'}, status=400)
 
-            return JsonResponse({
-                'success': True,
-                'pdf_name': uploaded_file.name,
-                'num_pages': num_pages,
-                'num_chunks': num_chunks,
-            })
-        except Exception as e:
-            logger.exception('upload error')
-            return JsonResponse({'error': str(e)}, status=500)
+    collection_name = uploaded_file.name.lower().replace(' ', '_').replace('.', '_')
 
-    return render(request, 'RAG/home.html')
+    try:
+        num_chunks, num_pages = ingest_pdf(uploaded_file, collection_name)
+        request.session['collection_name'] = collection_name
+        request.session['file_name'] = uploaded_file.name
+        request.session.modified = True
+
+        return JsonResponse({
+            'success': True,
+            'file_name': uploaded_file.name,
+            'num_pages': num_pages,
+            'num_chunks': num_chunks,
+        })
+    except Exception as e:
+        logger.exception('upload_pdf error')
+        return JsonResponse({'error': str(e)}, status=500)
 
 
-def chat(request):
-    pdf_name = request.session.get('pdf_name', '')
-    return render(request, 'RAG/home.html', {'pdf_name': pdf_name})
+def upload_csv(request):
+    if request.method != 'POST':
+        return render(request, 'RAG/home.html')
+
+    uploaded_file = request.FILES.get('csv_file')
+
+    if not uploaded_file:
+        return JsonResponse({'error': 'No file selected.'}, status=400)
+    if not uploaded_file.name.lower().endswith('.csv'):
+        return JsonResponse({'error': 'Please upload a CSV file.'}, status=400)
+
+    collection_name = uploaded_file.name.lower().replace(' ', '_').replace('.', '_')
+
+    try:
+        # cleaning happens inside ingest_csv
+        num_chunks, num_rows = ingest_csv(uploaded_file, collection_name)
+        request.session['collection_name'] = collection_name
+        request.session['file_name'] = uploaded_file.name
+        request.session.modified = True
+
+        return JsonResponse({
+            'success': True,
+            'file_name': uploaded_file.name,
+            'num_rows': num_rows,
+            'num_chunks': num_chunks,
+        })
+    except Exception as e:
+        logger.exception('upload_csv error')
+        return JsonResponse({'error': str(e)}, status=500)
 
 
 @csrf_exempt
@@ -68,11 +92,11 @@ def chat_api(request):
 
     collection_name = request.session.get('collection_name')
     if not collection_name:
-        return JsonResponse({'error': 'No PDF uploaded yet.'}, status=400)
+        return JsonResponse({'error': 'No file uploaded yet.'}, status=400)
 
     try:
         reply, docs = answer_question(question, collection_name, history)
-        return JsonResponse({'reply': reply})  # docs excluded — not serializable
+        return JsonResponse({'reply': reply})
     except Exception as e:
         logger.exception('chat_api error')
         return JsonResponse({'error': str(e)}, status=500)

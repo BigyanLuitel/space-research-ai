@@ -51,10 +51,22 @@ button {
     transition: background 0.3s;
 }
 
-button:hover {
+button:hover:not(:disabled) {
     background: #0056b3;
 }
 
+button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.file-hint {
+    font-size: 13px;
+    color: #666;
+    margin-top: -10px;
+    text-align: center;
+}
 #upload-status {
     padding: 12px;
     border-radius: 4px;

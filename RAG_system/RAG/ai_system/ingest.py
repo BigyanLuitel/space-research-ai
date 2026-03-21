@@ -1,9 +1,11 @@
 import os
 import tempfile
+import pandas as pd
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_chroma import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_core.documents import Document
 
 CHROMA_DIR = "chroma_db"
 
@@ -42,5 +44,33 @@ def ingest_pdf(uploaded_file, collection_name):
         vs = get_vectorstore(collection_name)
         vs.add_documents(chunks)
         return len(chunks), len(documents)
+    finally:
+        os.unlink(tmp.name)
+
+
+def ingest_csv(uploaded_file, collection_name):
+    tmp = tempfile.NamedTemporaryFile(delete=False, suffix='.csv')
+    for chunk in uploaded_file.chunks():
+        tmp.write(chunk)
+    tmp.close()
+
+    try:
+        df = pd.read_csv(tmp.name)
+        df = df.astype(str).replace('nan', 'N/A')
+
+        documents = []
+        for i, row in df.iterrows():
+            content = "\n".join(
+                f"{col}: {val}" for col, val in row.items() if val != 'N/A'
+            )
+            documents.append(Document(
+                page_content=content,
+                metadata={'row_index': i, 'source': 'csv'},
+            ))
+
+        chunks = split_documents(documents)
+        vs = get_vectorstore(collection_name)
+        vs.add_documents(chunks)
+        return len(chunks), len(df)
     finally:
         os.unlink(tmp.name)
