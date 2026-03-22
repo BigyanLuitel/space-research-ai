@@ -1,0 +1,210 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AstroQuery — Space Research AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'CSS/landing.css' %}">
+</head>
+<body>
+
+<canvas id="stars"></canvas>
+
+<nav id="nav">
+  <div class="nav-inner">
+    <div class="logo">ASTRO<span>QUERY</span></div>
+    <a href="#" class="nav-cta">Launch app →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-eyebrow">SpaceCon 2026 · Kathmandu, Nepal</div>
+    <h1 class="hero-title">
+      Ask your<br>
+      <em>space data</em><br>
+      anything.
+    </h1>
+    <p class="hero-sub">
+      Upload satellite datasets or mission documents.<br>
+      Get precise, grounded answers — powered by RAG<br>
+      and a large language model.
+    </p>
+    <div class="hero-actions">
+      <a href="#" class="btn-primary">
+        Upload a file
+        <span class="arr">→</span>
+      </a>
+      <a href="{% url 'home' %}" class="btn-ghost">See how it works</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <span class="stat-val">PDF</span>
+        <span class="stat-label">Mission docs</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-val">CSV</span>
+        <span class="stat-label">Orbital data</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-val">RAG</span>
+        <span class="stat-label">Grounded answers</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-val">LLM</span>
+        <span class="stat-label">Natural language</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="section-tag">How it works</div>
+      <h2 class="section-title">Three steps.<br>Zero friction.</h2>
+      <p class="section-sub">From raw data to precise answers in under a minute.</p>
+    </div>
+    <div class="steps reveal">
+      <div class="step">
+        <div class="step-num">01 —</div>
+        <svg class="step-icon" viewBox="0 0 36 36" fill="none" stroke="#e8712b" stroke-width="1.5">
+          <path d="M18 4v20M10 16l8 8 8-8M6 28h24"/>
+        </svg>
+        <h3>Upload your file</h3>
+        <p>Drop in a PDF mission report or a CSV satellite database. AstroQuery validates and indexes it automatically.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02 —</div>
+        <svg class="step-icon" viewBox="0 0 36 36" fill="none" stroke="#e8712b" stroke-width="1.5">
+          <circle cx="18" cy="18" r="12"/>
+          <path d="M18 10v8l5 3"/>
+        </svg>
+        <h3>Data gets indexed</h3>
+        <p>Your file is chunked, embedded using sentence transformers, and stored in a local ChromaDB vector store.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03 —</div>
+        <svg class="step-icon" viewBox="0 0 36 36" fill="none" stroke="#e8712b" stroke-width="1.5">
+          <path d="M6 10h24M6 18h16M6 26h20"/>
+          <circle cx="28" cy="26" r="4"/>
+        </svg>
+        <h3>Ask anything</h3>
+        <p>Type a question in plain English. The system retrieves relevant chunks and generates a precise, cited answer.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TERMINAL DEMO -->
+<section>
+  <div class="wrap">
+    <div class="reveal">
+      <div class="section-tag">Live demo</div>
+      <h2 class="section-title">Answers from<br>your data.</h2>
+    </div>
+    <div class="terminal-wrap reveal">
+      <div class="terminal-bar">
+        <div class="dot dot-r"></div>
+        <div class="dot dot-y"></div>
+        <div class="dot dot-g"></div>
+        <span class="terminal-title">astroquery — chat session</span>
+      </div>
+      <div class="terminal-body" id="terminal">
+        <div><span class="t-dim">// satellite_database_2024.csv indexed — 1,872 rows · 3,204 chunks</span></div>
+        <div>&nbsp;</div>
+        <div id="line1" style="opacity:0"><span class="t-prompt">you &gt; </span><span class="t-cmd">Which satellites are in GEO orbit with perigee above 35,700 km?</span></div>
+        <div id="line2" style="opacity:0">&nbsp;</div>
+        <div id="line3" style="opacity:0"><span class="t-prompt">ai  &gt; </span><span class="t-ans">Based on the uploaded dataset, 847 satellites meet this criteria. The largest operators are Intelsat (94 satellites), SES (83), and Eutelsat (72). The average apogee is 35,791 km with eccentricities below 0.0003.</span></div>
+        <div id="line4" style="opacity:0">&nbsp;</div>
+        <div id="line5" style="opacity:0"><span class="t-prompt">you &gt; </span><span class="t-cmd">What is Nepal's presence in this dataset?</span></div>
+        <div id="line6" style="opacity:0">&nbsp;</div>
+        <div id="line7" style="opacity:0"><span class="t-prompt">ai  &gt; </span><span class="t-ans">Nepal does not currently operate any satellites in the GEO band in this dataset. The nearest South Asian entries are from India (ISRO) and Pakistan (SUPARCO).</span></div>
+        <div id="line8" style="opacity:0">&nbsp;</div>
+        <div id="line9" style="opacity:0"><span class="t-prompt">you &gt; </span><span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section>
+  <div class="wrap">
+    <div class="reveal">
+      <div class="section-tag">Capabilities</div>
+      <h2 class="section-title">Built for<br>space data.</h2>
+    </div>
+    <div class="features-grid reveal">
+      <div class="feature">
+        <div class="feature-badge">Retrieval</div>
+        <h3>Grounded answers only</h3>
+        <p>Every answer is retrieved from your uploaded document. The system will not hallucinate data outside the file — if it's not there, it says so.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-badge">Formats</div>
+        <h3>PDF and CSV support</h3>
+        <p>Ingest mission reports, research papers, and technical documents as PDFs — or satellite orbital databases as CSV files.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-badge">Memory</div>
+        <h3>Conversation history</h3>
+        <p>Ask follow-up questions naturally. The chat remembers previous turns so you can drill down without repeating context.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-badge">Speed</div>
+        <h3>Fast inference via Groq</h3>
+        <p>Powered by Groq's inference API running LLaMA 3.3 70B — responses arrive in under two seconds even for complex queries.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SPACECON -->
+<div class="spacecon-section">
+  <div class="wrap">
+    <div class="spacecon-inner reveal">
+      <div class="spacecon-text">
+        <div class="section-tag">Event</div>
+        <h2 class="section-title" style="max-width:420px;">Presented at SpaceCon 2026</h2>
+        <p class="section-sub">Nepal's space technology conference — bringing together Python developers, data scientists, researchers, and space enthusiasts.</p>
+      </div>
+      <div class="spacecon-badge">
+        <div class="badge-event">SpaceCon 2026</div>
+        <div class="badge-name">Kathmandu</div>
+        <div class="badge-location">Nepal · 2026</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="section-tag" style="text-align:center;">Get started</div>
+      <h2 class="section-title">Upload your first<br>space dataset.</h2>
+      <p class="section-sub">No account required. Upload a PDF or CSV and start asking questions immediately.</p>
+      <a href="/upload/" class="btn-primary" style="display:inline-flex; margin:0 auto;">
+        Launch AstroQuery
+        <span class="arr">→</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-copy">© 2026 AstroQuery · SpaceCon Nepal</div>
+    <div class="footer-copy">Built with Django · LangChain · ChromaDB · Groq</div>
+  </div>
+</footer>
+
+<script src="{% static 'JS/landing.js' %}"></script>
+</body>
+</html>

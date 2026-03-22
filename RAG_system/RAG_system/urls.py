@@ -19,7 +19,8 @@ from django.urls import path
 from RAG import views
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.home, name='home'),
+    path('', views.landing, name='index'),
+    path('home/', views.home, name='home'),
     path('upload-pdf/', views.upload_pdf, name='upload_pdf'),
     path('upload-csv/', views.upload_csv, name='upload_csv'),
     path('chat-api/', views.chat_api, name='chat_api'),

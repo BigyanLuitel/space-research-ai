@@ -8,7 +8,8 @@ from .ai_system.qa_chain import answer_question
 
 logger = logging.getLogger(__name__)
 
-
+def landing(request):
+    return render(request, 'RAG/landing.html')
 def home(request):
     return render(request, 'RAG/home.html')
 

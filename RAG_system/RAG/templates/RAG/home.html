@@ -4,28 +4,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Space Research AI</title>
+    <title>AstroQuery — Upload</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'CSS/home.css' %}">
 </head>
 <body>
-    <div class="upload">
-        <h2>Space Research AI</h2>
-        <form id="upload-form" enctype="multipart/form-data">
-            {% csrf_token %}
-            <input type="file" id="file-input" name="document" accept=".pdf,.csv">
-            <button type="submit" id="upload-btn">Upload Document</button>
-            <p class="file-hint" id="file-hint"></p>
-        </form>
 
-    <div id="chat-container" style="display:none;">
-        <div class="chat-header">
-            <span id="pdf-label"></span>
+    <nav>
+        <div class="nav-inner">
+            <div class="logo">ASTRO<span>QUERY</span></div>
+            <a href="/" class="nav-back">← Back to home</a>
         </div>
-        <div id="chat-messages"></div>
-        <div class="chat-input-row">
-            <input type="text" id="userMessage" placeholder="Ask a question...">
-            <button id="send">Send</button>
+    </nav>
+
+    <div class="page-wrap">
+
+        <!-- upload section -->
+        <div class="upload-section" id="upload-section">
+            <div class="section-tag">Step 01</div>
+            <h1 class="page-title">Upload your<br>document.</h1>
+            <p class="page-sub">Accepts PDF mission reports and CSV satellite databases.</p>
+
+            <form id="upload-form" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="drop-zone" id="drop-zone">
+                    <svg width="32" height="32" viewBox="0 0 36 36" fill="none" stroke="#e8712b" stroke-width="1.5">
+                        <path d="M18 4v20M10 16l8 8 8-8M6 28h24"/>
+                    </svg>
+                    <p class="drop-text">Drop a file here or <span>click to browse</span></p>
+                    <p class="drop-hint">PDF or CSV · max 50MB</p>
+                    <input type="file" id="file-input" name="document" accept=".pdf,.csv">
+                </div>
+                <div id="file-selected" class="file-selected" style="display:none;">
+                    <span id="file-name"></span>
+                    <button type="button" id="clear-file">✕</button>
+                </div>
+                <button type="submit" id="upload-btn" disabled>
+                    Index document →
+                </button>
+            </form>
+
+            <p id="upload-status" class="upload-status"></p>
         </div>
+
+        <!-- chat section -->
+        <div id="chat-container" style="display:none;">
+            <div class="chat-topbar">
+                <div class="chat-file-info">
+                    <div class="section-tag" style="margin:0;">Active document</div>
+                    <span id="file-label" class="chat-filename"></span>
+                </div>
+                <button class="new-upload-btn" onclick="resetUpload()">↑ Upload new</button>
+            </div>
+
+            <div id="chat-messages" class="chat-messages">
+                <div class="msg bot-message welcome-msg">
+                    Document indexed and ready. Ask me anything about its contents.
+                </div>
+            </div>
+
+            <div class="chat-input-row">
+                <input type="text" id="userMessage" placeholder="Ask a question about your document...">
+                <button id="send">Send</button>
+            </div>
+        </div>
+
     </div>
 
     <script src="{% static 'JS/home.js' %}"></script>

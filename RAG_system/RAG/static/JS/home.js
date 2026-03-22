@@ -1,9 +1,46 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const uploadForm = document.getElementById('upload-form');
+    const form       = document.getElementById('upload-form');
+    const fileInput  = document.getElementById('file-input');
+    const uploadBtn  = document.getElementById('upload-btn');
+    const dropZone   = document.getElementById('drop-zone');
+    const fileSelected = document.getElementById('file-selected');
+    const fileName   = document.getElementById('file-name');
     const chatSection = document.getElementById('chat-container');
-    const history = [];
+    const history    = [];
 
-    if (chatSection) chatSection.style.display = 'none';
+    // ── drag and drop ──
+    dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag'); });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag'));
+    dropZone.addEventListener('drop', e => {
+        e.preventDefault();
+        dropZone.classList.remove('drag');
+        const file = e.dataTransfer.files[0];
+        if (file) setFile(file);
+    });
+
+    fileInput.addEventListener('change', e => {
+        if (e.target.files[0]) setFile(e.target.files[0]);
+    });
+
+    document.getElementById('clear-file').addEventListener('click', clearFile);
+
+    function setFile(file) {
+        const ext = file.name.split('.').pop().toLowerCase();
+        if (!['pdf', 'csv'].includes(ext)) return showStatus('Only PDF and CSV files are supported.', 'error');
+        fileInput._file = file;
+        fileName.textContent = file.name;
+        fileSelected.style.display = 'flex';
+        uploadBtn.disabled = false;
+        showStatus('', '');
+    }
+
+    function clearFile() {
+        fileInput.value = '';
+        fileInput._file = null;
+        fileSelected.style.display = 'none';
+        uploadBtn.disabled = true;
+        showStatus('', '');
+    }
 
     function getCookie(name) {
         const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
@@ -11,36 +48,25 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function showStatus(msg, type) {
-        const status = document.getElementById('upload-status');
-        if (!status) return;
-        status.textContent = msg;
-        status.className = 'status ' + type;
+        const el = document.getElementById('upload-status');
+        el.textContent = msg;
+        el.className = 'upload-status ' + type;
     }
 
-    function append(role, text) {
-        const messages = document.getElementById('chat-messages');
-        if (!messages) return null;
-        const div = document.createElement('div');
-        div.className = 'msg ' + role;
-        div.textContent = text;
-        messages.appendChild(div);
-        messages.scrollTop = messages.scrollHeight;
-        return div;
-    }
+    // ── upload ──
+    form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const file = fileInput._file || fileInput.files[0];
+        if (!file) return showStatus('Please select a file.', 'error');
 
-    function showChat(fileName) {
-        if (chatSection) {
-            chatSection.style.display = 'flex';
-            const label = document.getElementById('file-label');
-            if (label) label.textContent = fileName;
-        }
-    }
-
-    async function uploadFile(file, url, fieldName) {
+        uploadBtn.disabled = true;
         showStatus('Uploading and indexing...', 'loading');
 
         const formData = new FormData();
-        formData.append(fieldName, file);
+        const ext = file.name.split('.').pop().toLowerCase();
+        formData.append(ext === 'csv' ? 'csv_file' : 'pdf_file', file);
+
+        const url = ext === 'csv' ? '/upload-csv/' : '/upload-pdf/';
 
         try {
             const res = await fetch(url, {
@@ -49,72 +75,48 @@ document.addEventListener('DOMContentLoaded', function () {
                 body: formData,
             });
             const data = await res.json();
-
             if (data.error) return showStatus(data.error, 'error');
 
             const info = data.num_pages
-                ? `${data.file_name} — ${data.num_pages} pages, ${data.num_chunks} chunks indexed.`
-                : `${data.file_name} — ${data.num_rows} rows, ${data.num_chunks} chunks indexed.`;
+                ? `${data.file_name} — ${data.num_pages} pages, ${data.num_chunks} chunks`
+                : `${data.file_name} — ${data.num_rows} rows, ${data.num_chunks} chunks`;
 
             showStatus(info, 'success');
-            showChat(data.file_name);
+
+            document.getElementById('upload-section').style.display = 'none';
+            document.getElementById('file-label').textContent = data.file_name;
+            chatSection.style.display = 'flex';
 
         } catch (err) {
-            console.error('Upload error:', err);
             showStatus('Upload failed: ' + err.message, 'error');
+            uploadBtn.disabled = false;
         }
-    }
+    });
 
-    function getFileType(fileName) {
-        const ext = fileName.toLowerCase().split('.').pop();
-        return ext === 'pdf' ? 'pdf' : ext === 'csv' ? 'csv' : null;
-    }
+    // ── reset ──
+    window.resetUpload = function () {
+        chatSection.style.display = 'none';
+        document.getElementById('upload-section').style.display = 'block';
+        clearFile();
+        document.getElementById('chat-messages').innerHTML =
+            '<div class="msg bot-message welcome-msg">Document indexed and ready. Ask me anything about its contents.</div>';
+    };
 
-    // Unified file input
-    if (uploadForm) {
-        const fileInput = document.getElementById('file-input');
-        const hint = document.getElementById('file-hint');
-        const uploadBtn = document.getElementById('upload-btn');
-
-        // Show file type hint when file is selected
-        if (fileInput) {
-            fileInput.addEventListener('change', function () {
-                if (this.files[0]) {
-                    const fileType = getFileType(this.files[0].name);
-                    hint.textContent = fileType ? `Selected: ${fileType.toUpperCase()} file` : 'Invalid file type. Please select PDF or CSV.';
-                    uploadBtn.disabled = !fileType;
-                } else {
-                    hint.textContent = '';
-                    uploadBtn.disabled = false;
-                }
-            });
-        }
-
-        uploadForm.addEventListener('submit', async function (e) {
-            e.preventDefault();
-            const file = fileInput.files[0];
-            if (!file) return showStatus('Please select a file.', 'error');
-            
-            const fileType = getFileType(file.name);
-            if (!fileType) return showStatus('Please upload a PDF or CSV file.', 'error');
-            
-            const url = fileType === 'pdf' ? '/upload-pdf/' : '/upload-csv/';
-            const fieldName = fileType === 'pdf' ? 'pdf_file' : 'csv_file';
-            
-            await uploadFile(file, url, fieldName);
-            fileInput.value = '';
-            hint.textContent = '';
-        });
-    }
-
-    // chat
-    const sendBtn = document.getElementById('send');
-    const userMessage = document.getElementById('userMessage');
-
-    if (sendBtn) sendBtn.addEventListener('click', send);
-    if (userMessage) userMessage.addEventListener('keydown', e => {
+    // ── chat ──
+    document.getElementById('send').addEventListener('click', send);
+    document.getElementById('userMessage').addEventListener('keydown', e => {
         if (e.key === 'Enter') { e.preventDefault(); send(); }
     });
+
+    function append(role, text) {
+        const messages = document.getElementById('chat-messages');
+        const div = document.createElement('div');
+        div.className = 'msg ' + role + '-message';
+        div.textContent = text;
+        messages.appendChild(div);
+        messages.scrollTop = messages.scrollHeight;
+        return div;
+    }
 
     async function send() {
         const input = document.getElementById('userMessage');
@@ -136,14 +138,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 body: JSON.stringify({ message: text, history: history.slice(-10) }),
             });
             const data = await res.json();
-            if (typing) typing.remove();
+            typing.remove();
             const reply = data.reply || data.error || 'No response.';
             history.push({ role: 'assistant', content: reply });
             append('bot', reply);
-
         } catch (err) {
-            if (typing) typing.remove();
-            console.error('Chat error:', err);
+            typing.remove();
             append('bot', 'Something went wrong: ' + err.message);
         }
     }
