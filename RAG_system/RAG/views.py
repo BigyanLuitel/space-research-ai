@@ -6,6 +6,7 @@ from django.shortcuts import render
 from .ai_system.ingest import ingest_pdf, ingest_csv
 from .ai_system.qa_chain import answer_question
 
+
 logger = logging.getLogger(__name__)
 
 def landing(request):
@@ -96,8 +97,27 @@ def chat_api(request):
         return JsonResponse({'error': 'No file uploaded yet.'}, status=400)
 
     try:
-        reply, docs = answer_question(question, collection_name, history)
-        return JsonResponse({'reply': reply})
+        reply, docs, metrics = answer_question(question, collection_name, history)
+        return JsonResponse({'reply': reply, 'metrics': metrics})
     except Exception as e:
         logger.exception('chat_api error')
         return JsonResponse({'error': str(e)}, status=500)
+
+def metrics_dashboard(request):
+    """
+    GET /metrics/ — returns aggregate scores for the session.
+    Useful for checking quality after a demo.
+    """
+    eval_log = request.session.get('eval_log', [])
+    if not eval_log:
+        return JsonResponse({'message': 'No evaluations yet.'})
+
+    count = len(eval_log)
+    return JsonResponse({
+        'total_queries':      count,
+        'avg_retrieval':      round(sum(m['retrieval_relevance'] for m in eval_log) / count, 2),
+        'avg_faithfulness':   round(sum(m['faithfulness']        for m in eval_log) / count, 2),
+        'avg_completeness':   round(sum(m['completeness']        for m in eval_log) / count, 2),
+        'avg_overall':        round(sum(m['overall']             for m in eval_log) / count, 2),
+        'recent':             eval_log[-5:],
+    })

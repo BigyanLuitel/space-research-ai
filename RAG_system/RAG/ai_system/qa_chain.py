@@ -5,6 +5,7 @@ from langchain_core.documents import Document
 from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 from langchain_groq import ChatGroq
 from .ingest import get_vectorstore
+from .evaluation import evaluate
 
 load_dotenv(override=True)
 
@@ -50,7 +51,7 @@ def answer_question(
     question: str,
     collection_name: str,
     history: list[dict] = []
-) -> tuple[str, list[Document]]:
+) -> tuple[str, list[Document], dict]:
 
     logger.info("RAG query: %s", question)
 
@@ -71,7 +72,10 @@ def answer_question(
         messages.append(HumanMessage(content=question))
 
         response = llm.invoke(messages)
-        return response.content, docs
+        
+    # run evaluation after every response
+        metrics = evaluate(question, response.content, docs)
+        return response.content, docs, metrics
 
     except Exception as e:
         logger.error("Error in answer_question: %s", str(e), exc_info=True)

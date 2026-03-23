@@ -50,24 +50,33 @@
         </div>
 
         <!-- chat section -->
-        <div id="chat-container" style="display:none;">
-            <div class="chat-topbar">
-                <div class="chat-file-info">
-                    <div class="section-tag" style="margin:0;">Active document</div>
-                    <span id="file-label" class="chat-filename"></span>
-                </div>
-                <button class="new-upload-btn" onclick="resetUpload()">↑ Upload new</button>
-            </div>
-
-            <div id="chat-messages" class="chat-messages">
-                <div class="msg bot-message welcome-msg">
-                    Document indexed and ready. Ask me anything about its contents.
+        <div id="chat-container" style="display:none;" class="chat-wrapper">
+            <div id="metrics-panel" class="metrics-panel">
+                <div class="metrics-header">📊 Quality Metrics</div>
+                <div id="metrics-content" class="metrics-content">
+                    <p class="metrics-placeholder">Run a query to see metrics</p>
                 </div>
             </div>
 
-            <div class="chat-input-row">
-                <input type="text" id="userMessage" placeholder="Ask a question about your document...">
-                <button id="send">Send</button>
+            <div class="chat-main">
+                <div class="chat-topbar">
+                    <div class="chat-file-info">
+                        <div class="section-tag" style="margin:0;">Active document</div>
+                        <span id="file-label" class="chat-filename"></span>
+                    </div>
+                    <button class="new-upload-btn" onclick="resetUpload()">↑ Upload new</button>
+                </div>
+
+                <div id="chat-messages" class="chat-messages">
+                    <div class="msg bot-message welcome-msg">
+                        Document indexed and ready. Ask me anything about its contents.
+                    </div>
+                </div>
+
+                <div class="chat-input-row">
+                    <input type="text" id="userMessage" placeholder="Ask a question about your document...">
+                    <button id="send">Send</button>
+                </div>
             </div>
         </div>
 

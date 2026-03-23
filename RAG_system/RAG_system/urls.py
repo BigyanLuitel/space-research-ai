@@ -24,4 +24,6 @@ urlpatterns = [
     path('upload-pdf/', views.upload_pdf, name='upload_pdf'),
     path('upload-csv/', views.upload_csv, name='upload_csv'),
     path('chat-api/', views.chat_api, name='chat_api'),
+    path('metrics/', views.metrics_dashboard, name='metrics_dashboard'),
+
 ]

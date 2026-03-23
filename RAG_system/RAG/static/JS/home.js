@@ -142,9 +142,54 @@ document.addEventListener('DOMContentLoaded', function () {
             const reply = data.reply || data.error || 'No response.';
             history.push({ role: 'assistant', content: reply });
             append('bot', reply);
+            if (data.metrics) {
+                updateMetricsPanel(data.metrics);
+            }
         } catch (err) {
             typing.remove();
             append('bot', 'Something went wrong: ' + err.message);
         }
+    }
+
+    function updateMetricsPanel(metricsData) {
+        const metricsContent = document.getElementById('metrics-content');
+        metricsContent.innerHTML = '';
+        
+        const metrics = [
+            { label: 'Relevance', value: metricsData.retrieval_relevance },
+            { label: 'Faithfulness', value: metricsData.faithfulness },
+            { label: 'Completeness', value: metricsData.completeness }
+        ];
+        
+        metrics.forEach(m => {
+            const item = document.createElement('div');
+            item.className = 'metric-item';
+            
+            const label = document.createElement('div');
+            label.className = 'metric-label';
+            label.textContent = m.label;
+            
+            const bar = document.createElement('div');
+            bar.className = 'metric-bar';
+            
+            const fill = document.createElement('div');
+            fill.className = 'metric-fill';
+            fill.textContent = (m.value * 100).toFixed(0) + '%';
+            fill.style.width = '0%';
+            bar.appendChild(fill);
+            
+            const score = document.createElement('div');
+            score.className = 'metric-score';
+            score.textContent = m.value.toFixed(2);
+            
+            item.appendChild(label);
+            item.appendChild(bar);
+            item.appendChild(score);
+            metricsContent.appendChild(item);
+            
+            setTimeout(() => {
+                fill.style.width = (m.value * 100) + '%';
+            }, 50);
+        });
     }
 });
