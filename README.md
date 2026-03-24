@@ -324,6 +324,7 @@ For issues or questions:
 3. Include relevant logs and screenshots
 4. luitelbigyan344@gmail.com
 5. +977 9840977554
+6. https://www.linkedin.com/in/bigyan-luitel-b5245230b/
 
 ---
 
