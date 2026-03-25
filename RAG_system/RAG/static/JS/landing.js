@@ -1,6 +1,7 @@
 // ── starfield ──
 (function () {
   const canvas = document.getElementById('stars');
+  if (!canvas) return;
   const ctx = canvas.getContext('2d');
   let stars = [];
   let W, H;
@@ -12,12 +13,12 @@
 
   function init() {
     stars = [];
-    for (let i = 0; i < 180; i++) {
+    for (let i = 0; i < 120; i++) {
       stars.push({
         x:     Math.random() * W,
         y:     Math.random() * H,
-        r:     Math.random() * 1.2 + 0.2,
-        a:     Math.random(),
+        r:     Math.random() * 1.0 + 0.2,
+        a:     Math.random() * 0.18 + 0.04,
         speed: Math.random() * 0.003 + 0.001,
         phase: Math.random() * Math.PI * 2,
       });
@@ -27,10 +28,10 @@
   function draw(t) {
     ctx.clearRect(0, 0, W, H);
     for (const s of stars) {
-      const alpha = s.a * (0.4 + 0.6 * Math.sin(t * s.speed + s.phase));
+      const alpha = s.a * (0.5 + 0.5 * Math.sin(t * s.speed + s.phase));
       ctx.beginPath();
       ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(232,228,220,${alpha})`;
+      ctx.fillStyle = `rgba(26,23,20,${alpha})`;  /* --ink on light bg */
       ctx.fill();
     }
     requestAnimationFrame(draw);
