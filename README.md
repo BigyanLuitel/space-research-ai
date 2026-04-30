@@ -1,17 +1,7 @@
-<p align="left" style="pointer-events: none; cursor: default;">
-  <span style="display: inline-block;">
-    <img src="https://img.shields.io/badge/Hack_The_Box-CCTV-red?style=for-the-badge&labelColor=black" alt="Hack The Box" style="pointer-events: none;" />
-  </span>
-  <span style="display: inline-block; margin-left: 8px;">
-    <img src="https://img.shields.io/badge/Difficulty-Easy-green?style=for-the-badge&labelColor=black" alt="Difficulty Easy" style="pointer-events: none;" />
-  </span>
-  <span style="display: inline-block; margin-left: 8px;">
-    <img src="https://img.shields.io/badge/OS-Linux-blue?style=for-the-badge&labelColor=black" alt="OS Linux" style="pointer-events: none;" />
-  </span>
-  <span style="display: inline-block; margin-left: 8px;">
-    <img src="https://img.shields.io/badge/Pwn_Date-April_2026-purple?style=for-the-badge&labelColor=black" alt="Pwn Date April 2026" style="pointer-events: none;" />
-  </span>
-</p>
+![Hack The Box](https://img.shields.io/badge/Hack_The_Box-CCTV-red?style=for-the-badge&labelColor=black)
+![Difficulty Easy](https://img.shields.io/badge/Difficulty-Easy-green?style=for-the-badge&labelColor=black)
+![OS Linux](https://img.shields.io/badge/OS-Linux-blue?style=for-the-badge&labelColor=black)
+![Pwn Date April 2026](https://img.shields.io/badge/Pwn_Date-April_2026-purple?style=for-the-badge&labelColor=black)
 
 # 🚀 Space Research AI
 
