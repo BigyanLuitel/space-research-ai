@@ -1,3 +1,10 @@
+<p align="left">
+  <img src="https://img.shields.io/badge/Hack_The_Box-CCTV-red?style=for-the-badge&labelColor=black" />
+  <img src="https://img.shields.io/badge/Difficulty-Easy-green?style=for-the-badge&labelColor=black" />
+  <img src="https://img.shields.io/badge/OS-Linux-blue?style=for-the-badge&labelColor=black" />
+  <img src="https://img.shields.io/badge/Pwn_Date-April_2026-purple?style=for-the-badge&labelColor=black" />
+</p>
+
 # 🚀 Space Research AI
 
 **AI-powered Space Research Assistant** built using Django, RAG (Retrieval-Augmented Generation) architecture, and Generative AI to analyze satellite and space-related documents through intelligent question answering.
