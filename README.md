@@ -1,7 +1,5 @@
-![Hack The Box](https://img.shields.io/badge/Hack_The_Box-CCTV-red?style=for-the-badge&labelColor=black)
-![Difficulty Easy](https://img.shields.io/badge/Difficulty-Easy-green?style=for-the-badge&labelColor=black)
-![OS Linux](https://img.shields.io/badge/OS-Linux-blue?style=for-the-badge&labelColor=black)
-![Pwn Date April 2026](https://img.shields.io/badge/Pwn_Date-April_2026-purple?style=for-the-badge&labelColor=black)
+
+![Status Active](https://img.shields.io/badge/Status-Active-2ea44f?style=for-the-badge) ![Python 3.x](https://img.shields.io/badge/Python-3.x-3776ab?style=for-the-badge) ![Django 6.0.3](https://img.shields.io/badge/Django-6.0.3-092e20?style=for-the-badge) ![RAG System](https://img.shields.io/badge/RAG-System-0b5394?style=for-the-badge) ![ChromaDB 1.5.5](https://img.shields.io/badge/ChromaDB-1.5.5-0f9d58?style=for-the-badge)
 
 # 🚀 Space Research AI
 
@@ -330,6 +328,8 @@ For issues or questions:
 4. luitelbigyan344@gmail.com
 5. +977 9840977554
 6. https://www.linkedin.com/in/bigyan-luitel-b5245230b/
+
+![Status Active](https://img.shields.io/badge/Status-Active-2ea44f?style=for-the-badge) ![Python 3.x](https://img.shields.io/badge/Python-3.x-3776ab?style=for-the-badge) ![Django 6.0.3](https://img.shields.io/badge/Django-6.0.3-092e20?style=for-the-badge) ![RAG System](https://img.shields.io/badge/RAG-System-0b5394?style=for-the-badge) ![ChromaDB 1.5.5](https://img.shields.io/badge/ChromaDB-1.5.5-0f9d58?style=for-the-badge)
 
 ---
 
